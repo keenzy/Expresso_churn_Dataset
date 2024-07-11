@@ -7,6 +7,9 @@ from streamlit_pandas_profiling import st_profile_report
 from ydata_profiling import ProfileReport
 from plotly.subplots import make_subplots
 import plotly.express as px
+from sklearn.metrics import accuracy_score
+from sklearn.neighbors import KNeighborsClassifier
+
 from sklearn.model_selection import train_test_split
 
 # give a title to our app 
@@ -70,10 +73,36 @@ data['TOP_PACK'] = data['TOP_PACK'].astype('category').cat.codes
 st.dataframe(data)
 
 
+#Entrainer les données
 
-#Entrainez les données
+st.subheader("Entrainez les données et testez un classifieur de machine learning")
+st.write("Division des informations en données d'entrainement et de test")
+
+st.warning("X = data[['REGULARITY','REGION','FREQUENCE_RECH','TENURE']]")
+st.warning("y = data['CHURN']")
+
 X = data[['REGULARITY','REGION','FREQUENCE_RECH','TENURE']]
 y = data['CHURN']
 # We split the data into training and test sets
+st.warning("X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)")
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 st.write(X_test.head())
+
+st.subheader("Create a kNN classifier")
+st.warning("k = 5  # Choose the number of neighbors\n knn_classifier = KNeighborsClassifier(n_neighbors=k) \n ")
+st.warning("k = 5  # Choose the number of neighbors")
+k = 5  # Choose the number of neighbors
+knn_classifier = KNeighborsClassifier(n_neighbors=k)
+
+# Fit the model to the training data
+st.warning("knn_classifier.fit(X_train, y_train")
+knn_classifier.fit(X_train, y_train)
+
+# Make predictions on the test data
+st.warning("y_pred = knn_classifier.predict(X_test)")
+y_pred = knn_classifier.predict(X_test)
+
+# Evaluate accuracy
+st.warning("accuracy = accuracy_score(y_test, y_pred)")
+accuracy = accuracy_score(y_test, y_pred)
+st.write(f"Accuracy: {accuracy:.2f}")
